@@ -78,35 +78,7 @@ if($type == 'message') {
                     'text' => 'こうぺんちゃんかわいい〜'
                 )
             );
-        } else if ($packageId == 1477082) {
-            $response_format_text = array(
-                array(
-                    'type' => 'text',
-                    'text' => 'いいスタンプ持ってますね！'
-                )
-            );
-        } else if ($packageId == 1494952) {
-            $response_format_text = array(
-                array(
-                    'type' => 'text',
-                    'text' => 'いいスタンプ持ってますね！'
-                )
-            );
-        } else if ($packageId == 1507867) {
-            $response_format_text = array(
-                array(
-                    'type' => 'text',
-                    'text' => 'いいスタンプ持ってますね！'
-                )
-            );
-        } else if ($packageId == 1716722) {
-            $response_format_text = array(
-                array(
-                    'type' => 'text',
-                    'text' => 'いいスタンプ持ってますね！'
-                )
-            );
-        } else if ($packageId == 4100278) {
+        } else if (in_array($packageId ,array(1477082,1494952,1507867,1716722,4100278))) {
             $response_format_text = array(
                 array(
                     'type' => 'text',
