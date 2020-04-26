@@ -78,7 +78,7 @@ if($type == 'message') {
                     'text' => 'こうぺんちゃんかわいい〜'
                 )
             );
-        } else if ($packageId == 1477082 or 1494952 or 1507867 or 1716722 or 4100278) {
+        } else if ($packageId == 1477082 || 1494952 || 1507867 || 1716722 || 4100278) {
             $response_format_text = array(
                 array(
                     'type' => 'text',
