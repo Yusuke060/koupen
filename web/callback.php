@@ -6,7 +6,6 @@ $accessToken = getenv('LINE_CHANNEL_ACCESS_TOKEN');
 $json_string = file_get_contents('php://input');
 $jsonObj = json_decode($json_string);
 
-    
 //ReplyToken取得
 $replyToken = $jsonObj->{"events"}[0]->{"replyToken"};
 
@@ -22,11 +21,9 @@ $userId = $jsonObj->{"events"}[0]->{"source"}->{"userId"};
     
 if($type == 'message') {
     
-    // メッセージオブジェクト（今回は4種類のみ）
+    // メッセージオブジェクト
     // text（テキストを受け取った時）
     // sticker（スタンプを受け取った時）
-    // image（画像を受け取った時）
-    // location（位置情報を受け取った時）
     $msg_obj = $jsonObj->{"events"}[0]->{"message"}->{"type"};
     
     //メッセージ取得
@@ -81,15 +78,18 @@ if($type == 'message') {
                     'text' => 'こうぺんちゃんかわいい〜'
                 )
             );
+        } else if ($packageId == 1477082 or 1494952 or 1507867 or 1716722 or 4100278) {
+            $response_format_text = array(
+                array(
+                    'type' => 'text',
+                    'text' => 'いいスタンプ持ってますね！'
+                )
+            );
         } else {
             $response_format_text = array(
                 array(
                     'type' => 'text',
                     'text' => 'こうぺんちゃんのスタンプを送ってみてね！'
-                ),
-                array(
-                    'type' => 'text',
-                    'text' => '持ってなかったらぜひ買ってね！！'
                 ),
                 array(
                     'type'     => 'template',
@@ -123,16 +123,6 @@ if($type == 'message') {
         exit;
     }
 
-}else if($type == 'postback') {
-    // 送られたデータ
-    $postback = $jsonObj->{'events'}[0]->{'postback'}->{'data'};
-    
-    $response_format_text = array(
-        array(
-            'type' => 'text',
-            'text' => 'こんにちは！'
-        )
-    );
 }
 
 $post_data = array(
