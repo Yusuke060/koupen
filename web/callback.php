@@ -60,11 +60,6 @@ if($type == 'message') {
     //スタンプID取得
     $packageId = $jsonObj->{"events"}[0]->{"message"}->{"packageId"};
     
-    //text以外のときは何も返さず終了
-    if($msg_obj != "sticker" or "text"){
-        exit;
-    }
-    
     if($msg_obj == "text"){
         if ($text == 'こうぺんちゃん'){
             $response_format_text = array(
@@ -103,9 +98,7 @@ if($type == 'message') {
                 )
             );
         }
-    }
-
-    if($msg_obj == "sticker"){
+    } else if($msg_obj == "sticker"){
         if ($packageId == 3379511) {
             $response_format_text = array(
                 array(
@@ -301,7 +294,10 @@ if($type == 'message') {
                 )
             );
         }
+    } else {
+        exit;
     }
+
 }else if($type == 'postback') {
     // 送られたデータ
     $postback = $jsonObj->{'events'}[0]->{'postback'}->{'data'};
