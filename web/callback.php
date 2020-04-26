@@ -61,36 +61,56 @@ if($type == 'message') {
     $packageId = $jsonObj->{"events"}[0]->{"message"}->{"packageId"};
     
     //text以外のときは何も返さず終了
-    if($msg_obj != "sticker"){
+    if($msg_obj != "sticker" or "text"){
         exit;
     }
-
-    if($msg_obj == "sticker"){
-        if ($packageId > 0) {
+    
+    if($msg_obj == "text"){
+        if ($text == 'こうぺんちゃん'){
             $response_format_text = array(
                 array(
                     'type' => 'text',
-                    'text' => $packageId
-                ),
+                    'text' => 'こうぺんちゃんかわいいよね〜'
+                )
+            );
+        } else {
+            $response_format_text = array(
                 array(
                     'type'     => 'template',
-                    'altText'  => '確認',
+                    'altText'  => '使い方',
                     'template' => array(
-                        'type'    => 'confirm',
-                        'text'   => 'どちらを選びますか？',
+                        'type'    => 'buttons',
+                        'title'   => '使い方' ,
+                        'text'    => '以下のボタンを押してみてください',
                         'actions' => array(
                             array(
-                                'type'  => 'postback',
-                                'label' => 'ランダム',
-                                'data'  => 'randamu'
+                                'type'  => 'message',
+                                'label' => 'こうぺんちゃん',
+                                'text'  => 'こうぺんちゃん'
                             ),
                             array(
-                                'type'  => 'postback',
-                                'label' => '選択肢',
-                                'data'  => 'erabu'
+                                'type'  => 'uri',
+                                'uri' => 'http://www.koupenchan-store.jp/',
+                                'label'  => 'ホームページ'
+                            ),
+                            array(
+                                'type'  => 'uri',
+                                'uri' => 'https://twitter.com/k_r_r_l_l_',
+                                'label'  => 'Twitter'
                             )
                         )
                     )
+                )
+            );
+        }
+    }
+
+    if($msg_obj == "sticker"){
+        if ($packageId == 3379511) {
+            $response_format_text = array(
+                array(
+                    'type' => 'text',
+                    'text' => 'こうぺんちゃんかわいい〜'
                 )
             );
         }
@@ -101,28 +121,7 @@ if($type == 'message') {
         
         
         
-        else if ($text == 'テキスト') {
-            $response_format_text = array(
-                array(
-                    'type' => 'text',
-                    'text' => 'テキストメッセージ'
-                )
-            );
-        } else if ($text == '絵文字') {
-            $response_format_text = array(
-                array(
-                    'type'   => 'text',
-                    'text'   => '$ emoji',
-                    'emojis' => array(
-                        array(
-                            'index'     => 0,
-                            'productId' => '5ac21542031a6752fb806d55',
-                            'emojiId'  => '117'
-                        )
-                    )
-               )
-            );
-        } else if ($text == 'スタンプ') {
+        else if ($text == 'スタンプ') {
             $response_format_text = array(
                 array(
                     'type'      => 'sticker',
@@ -144,24 +143,6 @@ if($type == 'message') {
                     'type'               => 'video',
                     'originalContentUrl' => 'https://' . $_SERVER['SERVER_NAME'] . '/kourin.mp4',
                     'previewImageUrl'    => 'https://' . $_SERVER['SERVER_NAME'] . '/kourin.jpg'
-                )
-            );
-        } else if ($text == '音声') {
-            $response_format_text = array(
-                array(
-                    'type'               => 'audio',
-                    'originalContentUrl' => 'https://' . $_SERVER['SERVER_NAME'] . '/oimtsm.m4a',
-                    'duration'    => 2000
-                )
-            );
-        } else if ($text == '位置') {
-            $response_format_text = array(
-                array(
-                    'type'      => 'location',
-                    'title'     => '皇居',
-                    'address'   => '東京都千代田区千代田1番1号',
-                    'latitude'  => 35.677730,
-                    'longitude' => 139.754813
                 )
             );
         } else if ($text == 'ボタン') {
@@ -282,55 +263,38 @@ if($type == 'message') {
                     )
                 )
             );
-        } else if ($text == 'クイック') {
-            $response_format_text = array(
-                array(
-                    'type' => 'text',
-                    'text' => '下から選んでください。',
-                    'quickReply' => array(
-                        'items' => array(
-                            array(
-                                'type' => 'action',
-                                'action' => array(
-                                    'type' => 'cameraRoll',
-                                    'label' => 'Send photo'
-                                )
-                            ),
-                            array(
-                                'type' => 'action',
-                                'action' => array(
-                                    'type' => 'camera',
-                                    'label' => 'Open camera'
-                                )
-                            )
-                        )
-                    )
-                )
-            );
         } else {
             $response_format_text = array(
                 array(
+                    'type' => 'text',
+                    'text' => 'こうぺんちゃんのスタンプを送ってみてね！'
+                ),
+                array(
+                    'type' => 'text',
+                    'text' => '持ってなかったらぜひ買ってね！！'
+                ),
+                array(
                     'type'     => 'template',
-                    'altText'  => '使い方',
+                    'altText'  => 'スタンプ例',
                     'template' => array(
                         'type'    => 'buttons',
-                        'title'   => '使い方' ,
-                        'text'    => '以下のボタンを押してみてください',
+                        'thumbnailImageUrl' => 'https://' . $_SERVER['SERVER_NAME'] . '/main.png',
+                        'text'    => 'こんなのがあります',
                         'actions' => array(
                             array(
-                                'type'  => 'message',
-                                'label' => 'こうぺんちゃん',
-                                'text'  => 'こうぺんちゃん'
+                                'type'  => 'uri',
+                                'uri' => 'https://line.me/R/shop/sticker/detail/3379511',
+                                'label'  => 'なかよし！コウペンちゃん'
                             ),
                             array(
                                 'type'  => 'uri',
-                                'uri' => 'http://www.koupenchan-store.jp/',
-                                'label'  => 'ホームページ'
+                                'uri' => 'https://line.me/R/shop/sticker/detail/9823',
+                                'label'  => 'うごく！コウペンちゃん'
                             ),
                             array(
                                 'type'  => 'uri',
-                                'uri' => 'https://twitter.com/k_r_r_l_l_',
-                                'label'  => 'Twitter'
+                                'uri' => 'https://line.me/R/shop/sticker/detail/7824781',
+                                'label'  => '夏とコウペンちゃん'
                             )
                         )
                     )
