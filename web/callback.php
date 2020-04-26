@@ -57,17 +57,20 @@ if($type == 'message') {
     //メッセージ取得
     $text = $jsonObj->{"events"}[0]->{"message"}->{"text"};
     
+    //スタンプID取得
+    $packageId = $jsonObj->{"events"}[0]->{"message"}->{"packageId"};
+    
     //text以外のときは何も返さず終了
-    if($msg_obj != "text"){
+    if($msg_obj != "sticker"){
         exit;
     }
 
-    if($msg_obj == "text"){
-        if ($text == '昼ごはん') {
+    if($msg_obj == "sticker"){
+        if ($packageId > 0) {
             $response_format_text = array(
                 array(
                     'type' => 'text',
-                    'text' => '何が食べたいですか？'
+                    'text' => $packageId
                 ),
                 array(
                     'type'     => 'template',
@@ -90,108 +93,7 @@ if($type == 'message') {
                     )
                 )
             );
-        } else if ($text == 'おはよう') {
-            $response_format_text = array(
-                array(
-                    'type' => 'text',
-                    'text' => '【'.$text.'】とは何ですか？'
-                )
-            );
-        } else if ($text == '記録') {
-            $response_format_text = array(
-                array(
-                    'type'     => 'template',
-                    'altText'  => '記録',
-                    'template' => array(
-                        'type'    => 'buttons',
-                        'text'    => '下のボタンを押し, 数字を入力してください。',
-                        'actions' => array(
-                            array(
-                                'type'  => 'postback',
-                                'label' => '記録',
-                                'data'  => 'kiroku'
-                            )
-                        )
-                    )
-                )
-            );
-        } else if (is_numeric($text)) {
-            if (is_int($text)){
-                $response_format_text = array(
-                    array(
-                        'type' => 'text',
-                        'text' => '整数【'.$text.'】ですね？'
-                    )
-                );
-            } else{
-                $response_format_text = array(
-                    array(
-                        'type' => 'text',
-                        'text' => '整数を入力してください。'
-                    )
-                );
-            }
-        } else if ($text == '首都') {
-            
-            $f = fopen('https://' . $_SERVER['SERVER_NAME'] . '/shuto/shuto.csv', 'r');
-            while (($fcsv = fgetcsv($f)) !== false) {
-                $shuto[] = $fcsv;
-            }
-            fclose($f);
-            
-            $max = count($shuto) - 1;
-            $random = rand(1,$max);
-            $response_format_text = array(
-                array(
-                    'type' => 'text',
-                    'text' => '【'.$shuto[$random][0].'】の首都は'.$shuto[$random][1].'です。'
-                )
-            );
-        } else if ($text == '天気') {
-            
-            $weather = json_decode(file_get_contents('https://api.openweathermap.org/data/2.5/forecast?id=1907306&units=metric&cnt=1&appid=87ad375ecb53eaf114f39defb035f7c9'));
-            $tenki = $weather->{"list"}[0]->{"weather"}[0]->{"description"};
-        
-            $response_format_text = array(
-                array(
-                    'type' => 'text',
-                    'text' => '【'.$tenki.'】'
-                )
-            );
-        } else if ($text[0] == '@') {
-            $inputnumber = ltrim($text, '@');
-            
-            if (is_numeric($inputnumber)) {
-                
-                $file = ('https://' . $_SERVER['SERVER_NAME'] . '/record.txt');
-                $currentmoji = file_get_contents($file);
-                $currentnumber = trim($currentmoji, '\"');
-                $newnumber = $currentnumber + $imputnumber;
-                file_put_contents($file, $newnumber);
-                
-                $response_format_text = array(
-                    array(
-                        'type' => 'text',
-                        'text' => $currentnumber. 'に'.$inputnumber.'を加えて'.$newnumber.'になりました'
-                    ),
-                    array(
-                        'type' => 'text',
-                        'text' => $currentmoji
-                    )
-                );
-            } else{
-                $response_format_text = array(
-                    array(
-                        'type' => 'text',
-                        'text' => '整数を入力してください。'
-                    )
-                );
-            }
         }
-        
-        
-        
-        
         
         
         
@@ -417,19 +319,18 @@ if($type == 'message') {
                         'actions' => array(
                             array(
                                 'type'  => 'message',
-                                'label' => '昼ごはん',
-                                'text'  => '昼ごはん'
+                                'label' => 'こうぺんちゃん',
+                                'text'  => 'こうぺんちゃん'
                             ),
                             array(
                                 'type'  => 'uri',
-                                'uri' => 'https://' . $_SERVER['SERVER_NAME'] . '/',
+                                'uri' => 'http://www.koupenchan-store.jp/',
                                 'label'  => 'ホームページ'
                             ),
                             array(
-                                'type'  => 'datetimepicker',
-                                'label' => '日時',
-                                'data'  => 'datetemp',
-                                'mode'  => 'date'
+                                'type'  => 'uri',
+                                'uri' => 'https://twitter.com/k_r_r_l_l_',
+                                'label'  => 'Twitter'
                             )
                         )
                     )
@@ -441,78 +342,12 @@ if($type == 'message') {
     // 送られたデータ
     $postback = $jsonObj->{'events'}[0]->{'postback'}->{'data'};
     
-    if($postback === 'datetemp') {
-        // 日にち選択時
-        $response_format_text = array(
-            array(
-                'type' => 'text',
-                'text' => '【'.$jsonObj->{'events'}[0]->{'postback'}->{'params'}->{'date'}.'】にご予約を承りました。'
-            )
-        );
-    } else if($postback === 'sanka') {
-        $response_format_text = array(
-            array(
-                'type' => 'text',
-                'text' => '参加を受け付けました。'
-            )
-        );
-    } else if($postback === 'fusanka') {
-        $response_format_text = array(
-            array(
-                'type' => 'text',
-                'text' => '不参加を受け付けました。'
-            )
-        );
-    } else if($postback === 'shitteru') {
-        $response_format_text = array(
-            array(
-                'type' => 'text',
-                'text' => 'ありがとうございます！'
-            )
-        );
-    } else if($postback === 'hatsumimi') {
-        $response_format_text = array(
-            array(
-                'type' => 'text',
-                'text' => 'これからよろしくお願いします！'
-            )
-        );
-    } else if($postback === 'randamu') {
-
-        $f = fopen('https://' . $_SERVER['SERVER_NAME'] . '/menu/menu.csv', 'r');
-        while (($fcsv = fgetcsv($f)) !== false) {
-            $menu[] = $fcsv;
-        }
-        fclose($f);
-        
-        $max = count($menu) - 1;
-        $random = rand(1,$max);
-        $response_format_text = array(
-            array(
-                'type' => 'text',
-                'text' => '【'.$menu[$random][1].'】'
-            ),
-            array(
-                'type'      => 'image',
-                'originalContentUrl' => 'https://' . $_SERVER['SERVER_NAME'] . '/menu/' . $menu[$random][2] . '.jpg',
-                'previewImageUrl' => 'https://' . $_SERVER['SERVER_NAME'] . '/menu/' . $menu[$random][2] . '.jpg'
-            )
-        );
-    } else if($postback === 'erabu') {
-        
-        $f = fopen('https://' . $_SERVER['SERVER_NAME'] . '/menu/menu.csv', 'r');
-        while (($fcsv = fgetcsv($f)) !== false) {
-            $menu[] = $fcsv;
-        }
-        fclose($f);
-        
-        $response_format_text = array(
-            array(
-                'type' => 'text',
-                'text' => 'この機能はまだ使えません。'
-            )
-        );
-    }
+    $response_format_text = array(
+        array(
+            'type' => 'text',
+            'text' => 'こんにちは！'
+        )
+    );
 }
 
 $post_data = array(
