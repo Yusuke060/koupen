@@ -1,7 +1,6 @@
 <?php
 $accessToken = getenv('LINE_CHANNEL_ACCESS_TOKEN');
 
-
 //ユーザーからのメッセージ取得
 $json_string = file_get_contents('php://input');
 $jsonObj = json_decode($json_string);
@@ -12,7 +11,6 @@ $replyToken = $jsonObj->{"events"}[0]->{"replyToken"};
 // イベント種別（今回は2種類のみ）
 // message（メッセージが送信されると発生）
 // postback（ポストバックオプションに返事されると送信）
-// join (グループに参加)
 $type = $jsonObj->{"events"}[0]->{"type"};
         
 //userId
@@ -71,7 +69,7 @@ if($type == 'message') {
             );
         }
     } else if($msg_obj == "sticker"){
-        if ($packageId == 3379511) {
+        if (in_array($packageId ,array(1426502,1457374,1613905,3035223,5019619,3379511,7824781,9345547,10847285,9823))) {
             $response_format_text = array(
                 array(
                     'type' => 'text',
@@ -83,6 +81,13 @@ if($type == 'message') {
                 array(
                     'type' => 'text',
                     'text' => 'いいスタンプ持ってますね！'
+                )
+            );
+        } else if (in_array($packageId ,array(5262))) {
+            $response_format_text = array(
+                array(
+                    'type' => 'text',
+                    'text' => 'プーさんもいいよね！'
                 )
             );
         } else {
